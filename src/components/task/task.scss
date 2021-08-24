@@ -1,0 +1,10 @@
+.task:hover {
+  cursor: pointer;
+  .deleteIcon{
+    display: block;
+  }
+}
+
+.deleteIcon {
+  display: none;
+}
