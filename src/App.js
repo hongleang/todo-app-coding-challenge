@@ -1,4 +1,4 @@
-import Dashboard from './components/dashboard/Dashboard';
+import Dashboard from "./components/dashboard/Dashboard";
 
 const App = () => {
   return (
@@ -6,6 +6,6 @@ const App = () => {
       <Dashboard />
     </div>
   );
-}
+};
 
 export default App;
