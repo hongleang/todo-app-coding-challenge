@@ -1,74 +1,101 @@
 import React, { useState } from "react";
 import Todo from "../todo/Todo";
 import Done from "../done/Done";
-import { v4 as uuidv4 } from "uuid";
+
 import { DragDropContext } from "react-beautiful-dnd";
 
+import initialData from "../../data/data";
+
 const Dashboard = () => {
-  const currentTask = [
-    {
-      id: uuidv4(),
-      title: "walk the dog",
-      description: "At the park. Bring snacks!",
-      isDone: false,
-    },
-    {
-      id: uuidv4(),
-      title: "Bring gift for Abby",
-      description: "At her dad store. She likes gems or dandallion",
-      isDone: true,
-    },
-    {
-      id: uuidv4(),
-      title: "give leek to George",
-      description: "At his house. He will be watching TV",
-      isDone: false,
-    },
-  ];
+  const [starterData, setStarterData] = useState(initialData);
 
-  const [tasks, setTasks] = useState(currentTask);
-
-  const addTask = (newTask) => {
-    newTask.id = uuidv4();
-    console.log(newTask);
-
-    setTasks([...tasks, newTask]);
-    console.log(tasks);
+  const addTask = (task) => {
+    const newTasks = {...starterData.tasks, [task.id]: task};
+    const newTaskIds = [...starterData.columns["column-1"].taskIds, task.id];
+    
+    setStarterData({
+      ...starterData, 
+      tasks: newTasks,
+      columns: {
+        ...starterData.columns,
+        "column-1": {
+          ...starterData.columns["column-1"],
+          taskIds: newTaskIds
+        }
+      }
+    });
   };
 
   const editTask = (taskId, task) => {
-    const index = tasks.findIndex((task) => taskId === task.id);
-    const newArr = [...tasks];
-    const keysUpdate = Object.keys(task);
-    keysUpdate.map((key) => (newArr[index][key] = task[key]));
-    setTasks(newArr);
+    //
   };
 
   const deleteTask = (taskId) => {
-    const filteredTasks = tasks.filter((task) => taskId !== task.id);
-    setTasks(filteredTasks);
+    // Find the taskId
+    // Match the taskId with staterData
+    // Filtering the the tasks
+    // Find out which column the task is in
+    // Filtering the column taskId
+    
   };
 
-  const handleDragEnd = (result) => {
-    if (!result.destination) return;
-
-    const start = result.source.droppableId;
-    const end = result.destination.droppableId;
-    const currentDraggableTask = result.draggableId;
-    // Get the current draggable task
-    // Check the id of the current to the current task and filter it
-    // Add the current draggable task to the new droppable column
-    // Set the task to isDone is true
-    
-    if (start === end) {
-      const newTasksOrder = [...tasks];
-      const [reorderedItem] = newTasksOrder.splice(result.source.index, 1);
-      newTasksOrder.splice(result.destination.index, 0, reorderedItem);
-      setTasks(newTasksOrder);
+  const handleDragEnd = ({ destination, source, draggableId, type }) => {
+    if (!destination) return;
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
     }
-    const newTasks = tasks.find((task) => task.id === currentDraggableTask);
-    newTasks.isDone = !newTasks.isDone;
-    console.log(start === end, newTasks);
+    // Search column through startderData
+    const start = starterData.columns[source.droppableId];
+    const end = starterData.columns[destination.droppableId];
+
+    if (start === end) {
+      
+      // debugger
+      const taskIds = [...start.taskIds];
+      const removed = taskIds.splice(source.index, 1);
+      taskIds.splice(destination.index, 0, removed[0]);
+
+      const newColOrder = {
+        ...start,
+        taskIds,
+      };
+
+      setStarterData({
+        ...starterData,
+        columns: {
+          ...starterData.columns,
+          [start.id]: newColOrder
+        },
+      });
+      console.log(starterData.columns)
+      return; // return after action
+    } 
+
+    const startColTaskIds = [...start.taskIds];
+    const endColTaskIds = [...end.taskIds];
+    const removed = startColTaskIds.splice(source.index, 1);
+    endColTaskIds.splice(destination.index, 0, removed[0]);
+
+    const newStarterCol = {
+      ...start,
+      taskIds: startColTaskIds
+    };
+
+    const newEndCol = {
+      ...end,
+      taskIds: endColTaskIds
+    };
+
+    setStarterData({
+      ...starterData,
+      columns: {
+        [start.id]: newStarterCol,
+        [end.id]: newEndCol
+      }
+    });
   };
 
   return (
@@ -76,20 +103,27 @@ const Dashboard = () => {
       <h3 className="text-center">Tasks Dashboard</h3>
       <div className="row gy-3 justify-content-around mt-5">
         <DragDropContext onDragEnd={handleDragEnd}>
-          <Todo
-            id="todoCol"
-            onEditTask={editTask}
-            onAddTask={addTask}
-            onDeleteTask={deleteTask}
-            tasks={tasks.filter((task) => !task.isDone)}
-            classes={"col-10 col-md-5 col-lg-5"}
-          />
-          <Done
-            id="doneCol"
-            tasks={tasks.filter((task) => task.isDone)}
-            classes={"col-10 col-md-5 col-lg-5"}
-            onDeleteTask={deleteTask}
-          />
+          {
+            // Render all task from column in order
+            starterData.columnOrder.map((colId, index) => {
+              const column = starterData.columns[colId];
+              const colTasks = column.taskIds.map(
+                (taskId) => starterData.tasks[taskId]
+              );
+              return (
+                <Todo
+                  key={column.id}
+                  id={column.id}
+                  title={column.title}
+                  onEditTask={editTask}
+                  onAddTask={addTask}
+                  onDeleteTask={deleteTask}
+                  tasks={colTasks}
+                  classes={"col-10 col-md-5 col-lg-5"}
+                />
+              );
+            })
+          }
         </DragDropContext>
       </div>
     </div>

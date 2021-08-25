@@ -6,39 +6,38 @@ import Task from "../task/Task";
 
 import { Droppable } from "react-beautiful-dnd";
 
-const Todo = (props) => {
-  const { onAddTask, onEditTask, onDeleteTask } = props;
 
+const Todo = (props) => {
+  const { title, tasks, id, onAddTask, onEditTask, onDeleteTask } = props;
   return (
     <div className={`${props.classes} todolist rounded shadow`}>
       <div className="row justify-content-between align-items-center my-2">
-        <h5 className="col-1 fw-bold">Todos:</h5>
-        <button
+        <h5 className="col-1 fw-bold">{title}</h5>
+        {title === 'Todo' && <button
           className="col-2 fs-3 btn"
           data-bs-toggle="modal"
           data-bs-target="#staticBackdrop"
         >
           <i className="fas fa-plus-circle"></i>
-        </button>
+        </button>}
       </div>
       <Modal addTask={onAddTask} />
-      <EditTask editTask={onEditTask} />
-      <Droppable droppableId="droppable-1">
+      {<EditTask editTask={onEditTask} />}
+      <Droppable droppableId={id} key={id}>
         {(provided, snapshot) => (
-          <div ref={provided.innerRef} {...provided.droppableProps}>
-            {props.tasks.length > 0 &&
-              props.tasks.map((task, index) => {
-                return (
-                  <Task
-                    key={task.id}
-                    id={task.id}
-                    title={task.title}
-                    index={index}
-                    description={task.description}
-                    deleteTask={onDeleteTask}
-                  />
-                );
-              })}
+          <div className="tasksContainer" ref={provided.innerRef} {...provided.droppableProps}>
+            {tasks.map((task, index) => (
+              <Task
+                key={task.id}
+                id={task.id}
+                col={title}
+                title={task.title}
+                index={index}
+                description={task.description}
+                deleteTask={onDeleteTask}
+              />
+            ))}
+            {provided.placeholder}
           </div>
         )}
       </Droppable>

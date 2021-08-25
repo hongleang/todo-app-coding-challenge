@@ -3,7 +3,7 @@ import "./task.scss";
 import { Draggable } from "react-beautiful-dnd";
 
 const Task = (props) => {
-  const { title, description, id, deleteTask, index} = props;
+  const { title, description, id, deleteTask, index, col } = props;
 
   const passDataToModal = (taskId, title, description) => {
     const editModal = document.querySelector("#editTaskModal");
@@ -38,7 +38,7 @@ const Task = (props) => {
                   <button onClick={() => deleteTask(id)} className="btn">
                     <i className="fas fa-trash fs-5 deleteIcon"></i>
                   </button>
-                  <button
+                  {col === 'Todo' && <button
                     data-bs-toggle="modal"
                     data-bs-target="#editTaskModal"
                     data-task-id={id}
@@ -46,7 +46,7 @@ const Task = (props) => {
                     className="btn"
                   >
                     <i className="far fa-edit fs-5 deleteIcon"></i>
-                  </button>
+                  </button>}
                 </div>
               </div>
               <p className="text-muted text-gray">{description}</p>
