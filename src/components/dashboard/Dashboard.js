@@ -58,17 +58,18 @@ const Dashboard = () => {
     setStarterData(newStarterData);
   };
 
-  const searchTask = (val) => {
-    // setSearchTerm(value);
-    
+  const searchTask = (val) => {    
     const tasks = { ...starterData.tasks };
+    const colTaskIds = [ ...starterData.columns['column-1'].taskIds ];
     const filteredTask = Object.entries(tasks)
       .filter(([key, value]) => {
-        return value.title
+        
+        return !value.isDone && value.title
           .toLowerCase()
           .includes(val.toLocaleLowerCase());
       })
-      .map((task => task[0]));
+      .map(task => task[0]);
+   
     setStarterData({
       ...starterData,
       columns: {
@@ -78,10 +79,10 @@ const Dashboard = () => {
           taskIds: filteredTask
         }
       }
-    })
+    });
   };
 
-  const handleDragEnd = ({ destination, source, draggableId, type }) => {
+  const handleDragEnd = ({ destination, source, draggableId }) => {
     if (!destination) return;
     if (
       destination.droppableId === source.droppableId &&
@@ -92,6 +93,8 @@ const Dashboard = () => {
     // Search column through startderData
     const start = starterData.columns[source.droppableId];
     const end = starterData.columns[destination.droppableId];
+
+    
 
     if (start === end) {
       const taskIds = [...start.taskIds];
@@ -110,15 +113,17 @@ const Dashboard = () => {
           [start.id]: newColOrder,
         },
       });
-      console.log(starterData.columns);
       return; // return after action
     }
 
     const startColTaskIds = [...start.taskIds];
     const endColTaskIds = [...end.taskIds];
     const removed = startColTaskIds.splice(source.index, 1);
-    endColTaskIds.splice(destination.index, 0, removed[0]);
 
+    starterData.tasks[draggableId].isDone = !starterData.tasks[draggableId].isDone;
+    
+    endColTaskIds.splice(destination.index, 0, removed[0]);
+    
     const newStarterCol = {
       ...start,
       taskIds: startColTaskIds,

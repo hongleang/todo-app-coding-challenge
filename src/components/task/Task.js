@@ -3,8 +3,9 @@ import "./task.scss";
 import { Draggable } from "react-beautiful-dnd";
 
 const Task = (props) => {
-  const { title, description, id, deleteTask, index, col, colId } = props;
+  const { title, description,completed, id, deleteTask, index, col, colId } = props;
 
+  const isDone = completed ? 'text-decoration-line-through text-muted bg-gray-900' : 'text-decoration-none';
   const passDataToModal = (taskId, title, description) => {
     const editModal = document.querySelector("#editTaskModal");
     editModal.addEventListener("shown.bs.modal", function (event) {
@@ -17,7 +18,7 @@ const Task = (props) => {
     });
   };
 
-  const handleClick = (e) => {
+  const handleClick = () => {
     passDataToModal(id, title, description);
   };
 
@@ -30,10 +31,10 @@ const Task = (props) => {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <div className="card shadow my-3 p-2">
+          <div className={`card shadow my-3 p-2 ${isDone}`}>
             <div className="card-body">
               <div className="d-flex justify-content-between">
-                <h5 className="card-title fw-bold">{title}</h5>
+                <h5 className={`card-title fw-bold ${isDone}`}>{title}</h5>
                 <div className="button-wrapper">
                   <button onClick={() => deleteTask(id, colId)} className="btn">
                     <i className="fas fa-trash fs-5 deleteIcon"></i>
@@ -49,7 +50,7 @@ const Task = (props) => {
                   </button>}
                 </div>
               </div>
-              <p className="text-muted text-gray">{description}</p>
+              <p className={`${isDone}`}>{description}</p>
             </div>
           </div>
         </div>

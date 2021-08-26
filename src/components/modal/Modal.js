@@ -15,7 +15,7 @@ const Modal = ({addTask, colId}) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    task.title.length > 0 ? addTask({...task, id: uuidv4()}, colId) 
+    task.title.length > 0 ? addTask({...task, id: uuidv4(), isDone: false}, colId) 
     : setTask({title: "", description: ""}); // Clear the input
   };
 

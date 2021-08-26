@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Modal from "../modal/Modal";
 import EditTask from "../modal/EditTask";
 import "./todo.scss";
@@ -7,7 +7,6 @@ import Task from "../task/Task";
 import { Droppable } from "react-beautiful-dnd";
 
 const Todo = (props) => {
-  
   const {
     title,
     tasks,
@@ -33,7 +32,12 @@ const Todo = (props) => {
         )}
       </div>
       {title === "Todo" && (
-        <input type="text" onChange={ event => onSearchTask(event.target.value)} className="form-control" />
+        <input
+          type="text"
+          placeholder="Search your task..."
+          onChange={(event) => onSearchTask(event.target.value)}
+          className="form-control py-2"
+        />
       )}
       <Modal colId={id} addTask={onAddTask} />
       <EditTask colId={id} editTask={onEditTask} />
@@ -51,6 +55,7 @@ const Todo = (props) => {
                 col={title}
                 colId={id}
                 title={task.title}
+                completed={task.isDone}
                 index={index}
                 description={task.description}
                 deleteTask={onDeleteTask}
