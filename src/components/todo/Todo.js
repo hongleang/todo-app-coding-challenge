@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Modal from "../modal/Modal";
 import EditTask from "../modal/EditTask";
 import "./todo.scss";
@@ -7,38 +7,61 @@ import Task from "../task/Task";
 import { Droppable } from "react-beautiful-dnd";
 
 const Todo = (props) => {
-  const { onAddTask, onEditTask, onDeleteTask } = props;
+  const {
+    title,
+    tasks,
+    id,
+    onAddTask,
+    onEditTask,
+    onDeleteTask,
+    onSearchTask,
+  } = props;
 
   return (
     <div className={`${props.classes} todolist rounded shadow`}>
       <div className="row justify-content-between align-items-center my-2">
-        <h5 className="col-1 fw-bold">Todos:</h5>
-        <button
-          className="col-2 fs-3 btn"
-          data-bs-toggle="modal"
-          data-bs-target="#staticBackdrop"
-        >
-          <i className="fas fa-plus-circle"></i>
-        </button>
+        <h5 className="col-1 fw-bold">{title}</h5>
+        {title === "Todo" && (
+          <button
+            className="col-2 fs-3 btn"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop"
+          >
+            <i className="fas fa-plus-circle"></i>
+          </button>
+        )}
       </div>
-      <Modal addTask={onAddTask} />
-      <EditTask editTask={onEditTask} />
-      <Droppable droppableId="droppable-1">
-        {(provided, snapshot) => (
-          <div ref={provided.innerRef} {...provided.droppableProps}>
-            {props.tasks.length > 0 &&
-              props.tasks.map((task, index) => {
-                return (
-                  <Task
-                    key={task.id}
-                    id={task.id}
-                    title={task.title}
-                    index={index}
-                    description={task.description}
-                    deleteTask={onDeleteTask}
-                  />
-                );
-              })}
+      {title === "Todo" && (
+        <input
+          type="text"
+          placeholder="Search your task..."
+          onChange={(event) => onSearchTask(event.target.value)}
+          className="form-control py-2"
+        />
+      )}
+      <Modal colId={id} addTask={onAddTask} />
+      <EditTask colId={id} editTask={onEditTask} />
+      <Droppable droppableId={id} key={id}>
+        {(provided) => (
+          <div
+            className="tasksContainer"
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+          >
+            {tasks.map((task, index) => (
+              <Task
+                key={task.id}
+                id={task.id}
+                col={title}
+                colId={id}
+                title={task.title}
+                completed={task.isDone}
+                index={index}
+                description={task.description}
+                deleteTask={onDeleteTask}
+              />
+            ))}
+            {provided.placeholder}
           </div>
         )}
       </Droppable>

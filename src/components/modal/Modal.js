@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
-const Modal = (props) => {
-  const [task, setTask] = useState({});
+const Modal = ({addTask, colId}) => {
+  const [task, setTask] = useState({
+    title: "",
+    description: ""
+  });
 
   const handleChange = (event) => {
     const name = event.target.name;
@@ -11,7 +15,8 @@ const Modal = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    props.addTask(task);
+    task.title.length > 0 ? addTask({...task, id: uuidv4(), isDone: false}, colId) 
+    : setTask({title: "", description: ""}); // Clear the input
   };
 
   return (
@@ -43,6 +48,7 @@ const Modal = (props) => {
                   className="form-control"
                   id="from-title"
                   name="title"
+                  value={task.title}
                   onChange={ handleChange }
                 />
                 <label htmlFor="form-title" className="form-label">
@@ -55,6 +61,7 @@ const Modal = (props) => {
                   id="form-description"
                   style={{ height: "200px" }}
                   name="description"
+                  value={task.description}
                   onChange={ handleChange }
                 ></textarea>
                 <label htmlFor="form-description" className="form-label">
