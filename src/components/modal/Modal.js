@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-const Modal = ({addTask}) => {
+const Modal = ({addTask, colId}) => {
   const [task, setTask] = useState({
     title: "",
     description: ""
@@ -15,7 +15,7 @@ const Modal = ({addTask}) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    task.title.length > 0 ? addTask({...task, id: uuidv4()}) 
+    task.title.length > 0 ? addTask({...task, id: uuidv4()}, colId) 
     : setTask({title: "", description: ""}); // Clear the input
   };
 

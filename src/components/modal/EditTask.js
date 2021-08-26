@@ -1,21 +1,17 @@
 import React, { useState } from "react";
 
 
-const EditTask = (props) => {
+const EditTask = ({editTask}) => {
   // Get task ID
   // Get task title and description set to input value
   // Set new title and description to object
   // Send object to edit method
-  const { editTask } = props;
   const [task, setTask] = useState({});
 
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    if (value.length > 0){
-      setTask({...task, [name]: value});
-    }
-    
+    setTask({...task, [name]: value});
   }
 
   const handleSubmit = (event) => {
@@ -25,7 +21,6 @@ const EditTask = (props) => {
     if (Object.keys(task).length === 0) {
       return;
     }
-    console.log(task);
     editTask(id, task);
   };
 
