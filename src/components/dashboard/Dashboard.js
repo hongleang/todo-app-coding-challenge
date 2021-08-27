@@ -7,7 +7,6 @@ import initialData from "../../data/data";
 
 const Dashboard = () => {
   const [starterData, setStarterData] = useState(initialData);
-  const [searchTerm, setSearchTerm] = useState("");
 
   const addTask = (task, colId) => {
     const newTasks = { ...starterData.tasks, [task.id]: task };
