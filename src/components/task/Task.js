@@ -1,14 +1,18 @@
-import React, { useEffect } from "react";
-import "./task.scss";
+import React from "react";
 import { Draggable } from "react-beautiful-dnd";
+import "./task.scss";
 
 const Task = (props) => {
-  const { title, description,completed, id, deleteTask, index, col, colId } = props;
+  const { title, description, completed, id, deleteTask, index, container, containerId } =
+    props;
 
-  const isDone = completed ? 'text-decoration-line-through text-muted bg-gray-900' : 'text-decoration-none';
-  const passDataToModal = (taskId, title, description) => {
+  const isDone = completed
+    ? "text-decoration-line-through text-muted bg-gray-900"
+    : "text-decoration-none";
+
+  const passDataToModal = ( title, description) => {
     const editModal = document.querySelector("#editTaskModal");
-    editModal.addEventListener("shown.bs.modal", function (event) {
+    editModal.addEventListener("shown.bs.modal", () => {
       const modalBodyTitle = editModal.querySelector("#form-title");
       const modalBodyDescription = editModal.querySelector("#form-description");
 
@@ -36,18 +40,20 @@ const Task = (props) => {
               <div className="d-flex justify-content-between">
                 <h5 className={`card-title fw-bold ${isDone}`}>{title}</h5>
                 <div className="button-wrapper">
-                  <button onClick={() => deleteTask(id, colId)} className="btn">
+                  <button onClick={() => deleteTask(id, containerId)} className="btn">
                     <i className="fas fa-trash fs-5 deleteIcon"></i>
                   </button>
-                  {col === 'Todo' && <button
-                    data-bs-toggle="modal"
-                    data-bs-target="#editTaskModal"
-                    data-task-id={id}
-                    onClick={handleClick}
-                    className="btn"
-                  >
-                    <i className="far fa-edit fs-5 deleteIcon"></i>
-                  </button>}
+                  {container === "Todo" && (
+                    <button
+                      data-bs-toggle="modal"
+                      data-bs-target="#editTaskModal"
+                      data-task-id={id}
+                      onClick={handleClick}
+                      className="btn"
+                    >
+                      <i className="far fa-edit fs-5 deleteIcon"></i>
+                    </button>
+                  )}
                 </div>
               </div>
               <p className={`${isDone}`}>{description}</p>

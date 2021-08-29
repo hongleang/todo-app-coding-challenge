@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Todo from "../todo/Todo";
+import initialData from "../../data/data";
 
+import List from "../list/List";
 import { DragDropContext } from "react-beautiful-dnd";
 
-import initialData from "../../data/data";
 
 const Dashboard = () => {
   const [starterData, setStarterData] = useState(initialData);
@@ -59,7 +59,6 @@ const Dashboard = () => {
 
   const searchTask = (val) => {    
     const tasks = { ...starterData.tasks };
-    const colTaskIds = [ ...starterData.columns['column-1'].taskIds ];
     const filteredTask = Object.entries(tasks)
       .filter(([key, value]) => {
         
@@ -73,7 +72,7 @@ const Dashboard = () => {
       ...starterData,
       columns: {
         ...starterData.columns,
-        ['column-1']: {
+        "column-1": {
           ...starterData.columns['column-1'],
           taskIds: filteredTask
         }
@@ -92,8 +91,6 @@ const Dashboard = () => {
     // Search column through startderData
     const start = starterData.columns[source.droppableId];
     const end = starterData.columns[destination.droppableId];
-
-    
 
     if (start === end) {
       const taskIds = [...start.taskIds];
@@ -151,15 +148,14 @@ const Dashboard = () => {
             // Render all task from column in order
             starterData.columnOrder.map((colId) => {
               const column = starterData.columns[colId];
-
               const colTasks = column.taskIds.map(
                 (taskId) => starterData.tasks[taskId]
               );
               return (
-                <Todo
+                <List
                   key={column.id}
                   id={column.id}
-                  title={column.title}
+                  name={column.title}
                   onEditTask={editTask}
                   onAddTask={addTask}
                   onDeleteTask={deleteTask}
