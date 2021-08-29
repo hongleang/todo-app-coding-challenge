@@ -13,7 +13,7 @@ const TasksContainer = ({id, name, provided, tasks, deleteTask}) => {
           key={task.id}
           id={task.id}
           title={task.title}
-          completed={task.isDone}
+          status={task.isDone}
           container={name}
           containerId={id}
           index={index}

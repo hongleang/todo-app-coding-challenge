@@ -72,7 +72,7 @@ const EditTask = ({editTask}) => {
                 </label>
               </div>
               <div className="modal-footer">
-                <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">
+                <button type="submit" className="btn btn-dark text-white" data-bs-dismiss="modal">
                   Edit task
                 </button>
               </div>
