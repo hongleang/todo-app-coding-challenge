@@ -4,24 +4,20 @@ import initialData from "../../data/data";
 import List from "../list/List";
 import { DragDropContext } from "react-beautiful-dnd";
 
-
 const Dashboard = () => {
   const [starterData, setStarterData] = useState(initialData);
 
   const addTask = (task, colId) => {
-    const newTasks = { ...starterData.tasks, [task.id]: task };
-    const newTaskIds = [...starterData.columns[colId].taskIds, task.id];
-
-    setStarterData({
-      ...starterData,
-      tasks: newTasks,
-      columns: {
-        ...starterData.columns,
-        [colId]: {
-          ...starterData.columns[colId],
-          taskIds: newTaskIds,
-        },
-      },
+    setStarterData((prevData) => {
+      const newTasks = { ...starterData.tasks, [task.id]: task };
+      const newTaskIds = [...starterData.columns[colId].taskIds, task.id];
+      const newData = { ...prevData };
+      newData.tasks = newTasks;
+      newData.columns[colId] = {
+        ...newData.columns[colId],
+        taskIds: newTaskIds,
+      };
+      return newData;
     });
   };
 
@@ -29,54 +25,51 @@ const Dashboard = () => {
     Object.entries(newTask).forEach((update) => {
       const key = update[0];
       const value = update[1];
-      const newTasks = { ...starterData };
-      newTasks.tasks[taskId] = {
-        ...newTasks.tasks[taskId],
-        [key]: value,
-      };
-      setStarterData(newTasks);
+      setStarterData((prevData) => {
+        const newData = { ...prevData };
+        newData.tasks[taskId] = {
+          ...newData.tasks[taskId],
+          [key]: value,
+        };
+        return newData;
+      });
     });
   };
 
   const deleteTask = (taskId, colId) => {
-    const newTasks = { ...starterData.tasks };
-    delete newTasks[taskId];
-    const newTaskIds = [...starterData.columns[colId].taskIds];
-    const filteredTasks = newTaskIds.filter((id) => id !== taskId);
-    const newStarterData = {
-      ...starterData,
-      tasks: newTasks,
-      columns: {
-        ...starterData.columns,
-        [colId]: {
-          ...starterData.columns[colId],
-          taskIds: filteredTasks,
-        },
-      },
-    };
-    setStarterData(newStarterData);
+    setStarterData((prevData) => {
+      const newData = { ...prevData };
+      delete newData.tasks[taskId];
+
+      const newTaskIds = [newData.columns[colId].taskIds];
+      const filteredTasks = newTaskIds.filter((id) => id !== taskId);
+
+      newData.columns[colId] = {
+        ...starterData.columns[colId],
+        taskIds: filteredTasks,
+      };
+      return newData;
+    });
   };
 
-  const searchTask = (val) => {    
-    const tasks = { ...starterData.tasks };
-    const filteredTask = Object.entries(tasks)
-      .filter(([key, value]) => {
-        
-        return !value.isDone && value.title
-          .toLowerCase()
-          .includes(val.toLocaleLowerCase());
-      })
-      .map(task => task[0]);
-   
-    setStarterData({
-      ...starterData,
-      columns: {
-        ...starterData.columns,
-        "column-1": {
-          ...starterData.columns['column-1'],
-          taskIds: filteredTask
-        }
-      }
+  const searchTask = (val) => {
+    setStarterData((prevData) => {
+      const newData = { ...prevData };
+      const filteredTaskId = Object.entries(newData.tasks)
+        .filter(([key, value]) => {
+          return (
+            !value.isDone &&
+            value.title.toLowerCase().includes(val.toLocaleLowerCase())
+          );
+        })
+        .map((task) => task[0]);
+
+      newData.columns["column-1"] = {
+        ...starterData.columns["column-1"],
+        taskIds: filteredTaskId,
+      };
+
+      return newData;
     });
   };
 
@@ -116,10 +109,11 @@ const Dashboard = () => {
     const endColTaskIds = [...end.taskIds];
     const removed = startColTaskIds.splice(source.index, 1);
 
-    starterData.tasks[draggableId].isDone = !starterData.tasks[draggableId].isDone;
-    
+    starterData.tasks[draggableId].isDone =
+      !starterData.tasks[draggableId].isDone;
+
     endColTaskIds.splice(destination.index, 0, removed[0]);
-    
+
     const newStarterCol = {
       ...start,
       taskIds: startColTaskIds,

@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
-
 const initialData = {
   tasks: {
     "task-1": { id: "task-1", title: "walk the dog", description: "At the park. Bring snacks!", isDone: false},

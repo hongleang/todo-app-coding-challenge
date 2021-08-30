@@ -1,22 +1,27 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-const Modal = ({addTask, colId}) => {
+const Modal = ({ addTask, colId }) => {
   const [task, setTask] = useState({
     title: "",
-    description: ""
+    description: "",
   });
+
+  // const [validForm, setValidForm] = useState(true);
 
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    setTask({...task, [name]: value});
-  }
+    setTask((prevTasks) => {
+      return { ...prevTasks, [name]: value };
+    });
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    task.title.length > 0 ? addTask({...task, id: uuidv4(), isDone: false}, colId) 
-    : setTask({title: "", description: ""}); // Clear the input
+    task.title.length > 0
+      ? addTask({ ...task, id: uuidv4(), isDone: false }, colId)
+      : setTask({ title: "", description: "" }); // Clear the input
   };
 
   return (
@@ -41,7 +46,7 @@ const Modal = ({addTask, colId}) => {
             ></button>
           </div>
           <div className="modal-body">
-            <form onSubmit={ handleSubmit }>
+            <form onSubmit={handleSubmit}>
               <div className="form-floating mb-3">
                 <input
                   type="text"
@@ -49,7 +54,7 @@ const Modal = ({addTask, colId}) => {
                   id="from-title"
                   name="title"
                   value={task.title}
-                  onChange={ handleChange }
+                  onChange={handleChange}
                 />
                 <label htmlFor="form-title" className="form-label">
                   Title
@@ -62,14 +67,18 @@ const Modal = ({addTask, colId}) => {
                   style={{ height: "200px" }}
                   name="description"
                   value={task.description}
-                  onChange={ handleChange }
+                  onChange={handleChange}
                 ></textarea>
                 <label htmlFor="form-description" className="form-label">
                   Description...
                 </label>
               </div>
               <div className="modal-footer">
-                <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">
+                <button
+                  type="submit"
+                  className="btn btn-dark text-white"
+                  data-bs-dismiss="modal"
+                >
                   Add task
                 </button>
               </div>
