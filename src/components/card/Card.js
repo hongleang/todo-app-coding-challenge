@@ -22,11 +22,11 @@ const Card = ({
   );
 
   return (
-    <div className={`card shadow my-3 p-2 ${isDone}`}>
+    <div className={`card shadow bg-dark text-light my-3 p-2 ${isDone}`}>
       <div className="card-body">
-        <div className="card__header">
+        <div className="card__header mb-1">
           <h5 className={`card-title fw-bold ${isDone}`}>{title}</h5>
-          <div className="button-wrapper">
+          <div className="d-flex">
             <DeleteButton
               id={id}
               containerId={containerId}

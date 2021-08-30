@@ -27,7 +27,7 @@ const List = (props) => {
   return (
     <div className={`${props.classes} list rounded shadow`}>
       <div className="list-header row justify-content-between align-items-center my-2">
-        <h5 className="col-1 fw-bold">{name}</h5>
+        <h5 className="col-1 fs-4 fw-bold">{name}</h5>
         {addButton}
       </div>
       {searchField}

@@ -28,7 +28,7 @@ const EditButton = ({ id, title, description }) => {
         onClick={handleClick}
         className="btn"
       >
-        <i className="hovering-effect far fa-edit fs-5 deleteIcon"></i>
+        <i className="hovering-effect far fa-edit fs-5 text-white deleteIcon"></i>
       </button>
     </>
   );

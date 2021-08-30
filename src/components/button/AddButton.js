@@ -9,7 +9,7 @@ const addButton = () => {
         data-bs-toggle="modal"
         data-bs-target="#staticBackdrop"
       >
-        <i className="hovering-effect fas fa-plus-circle"></i>
+        <i className="hovering-effect text-white fas fa-plus-circle"></i>
       </button>
     </>
   );

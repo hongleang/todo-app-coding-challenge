@@ -5,7 +5,7 @@ const DeleteButton = ({ deleteTask, id, containerId }) => {
   return (
     <>
       <button onClick={() => deleteTask(id, containerId)} className="btn">
-        <i className="hovering-effect fas fa-trash fs-5 deleteIcon"></i>
+        <i className="hovering-effect fas fa-trash fs-5 text-white deleteIcon"></i>
       </button>
     </>
   );

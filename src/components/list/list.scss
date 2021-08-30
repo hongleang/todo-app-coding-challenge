@@ -1,6 +1,8 @@
 .list{
+  min-width: 400px !important;
   padding: 1rem;
-  background: #F3F1F5;
+  color: white;
+  background-color: #272727;
 }
 
 .list-header {
@@ -8,5 +10,5 @@
 }
 
 .tasksContainer{
-  min-height: 500px;
+  min-height: 400px;
 }

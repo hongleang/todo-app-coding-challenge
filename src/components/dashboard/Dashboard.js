@@ -4,6 +4,8 @@ import initialData from "../../data/data";
 import List from "../list/List";
 import { DragDropContext } from "react-beautiful-dnd";
 
+import "./dashboard.scss";
+
 const Dashboard = () => {
   const [starterData, setStarterData] = useState(initialData);
 
@@ -39,15 +41,12 @@ const Dashboard = () => {
   const deleteTask = (taskId, colId) => {
     setStarterData((prevData) => {
       const newData = { ...prevData };
+
+      const newTasksIds = newData.columns[colId].taskIds.filter((id) => id !== taskId);
+      
+      newData.columns[colId].taskIds = newTasksIds;
       delete newData.tasks[taskId];
 
-      const newTaskIds = [newData.columns[colId].taskIds];
-      const filteredTasks = newTaskIds.filter((id) => id !== taskId);
-
-      newData.columns[colId] = {
-        ...starterData.columns[colId],
-        taskIds: filteredTasks,
-      };
       return newData;
     });
   };
@@ -121,7 +120,8 @@ const Dashboard = () => {
 
   return (
     <div className="container">
-      <h3 className="text-center">Tasks Dashboard</h3>
+      <div className="dashboard-header shadow-lg">
+      </div>      
       <div className="row gy-3 justify-content-around mt-5">
         <DragDropContext onDragEnd={handleDragEnd}>
           {
