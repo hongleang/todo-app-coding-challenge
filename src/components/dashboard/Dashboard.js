@@ -90,47 +90,33 @@ const Dashboard = () => {
       const removed = taskIds.splice(source.index, 1);
       taskIds.splice(destination.index, 0, removed[0]);
 
-      const newColOrder = {
-        ...start,
-        taskIds,
-      };
-
-      setStarterData({
-        ...starterData,
-        columns: {
-          ...starterData.columns,
-          [start.id]: newColOrder,
-        },
+      setStarterData((prevData) => {
+        const newData = { ...prevData };
+        newData.columns[start.id].taskIds = taskIds;
+        return newData;
       });
-      return; // return after action
+
+      return; // Exit the function
     }
 
     const startColTaskIds = [...start.taskIds];
     const endColTaskIds = [...end.taskIds];
     const removed = startColTaskIds.splice(source.index, 1);
 
+    // Toggle task status
     starterData.tasks[draggableId].isDone =
       !starterData.tasks[draggableId].isDone;
 
+    // Insert removed item from start col to end col
     endColTaskIds.splice(destination.index, 0, removed[0]);
 
-    const newStarterCol = {
-      ...start,
-      taskIds: startColTaskIds,
-    };
+    setStarterData((prevData) => {
+      const newData = {...prevData};
+      newData.columns[start.id].taskIds = startColTaskIds;
+      newData.columns[end.id].taskIds = endColTaskIds;
 
-    const newEndCol = {
-      ...end,
-      taskIds: endColTaskIds,
-    };
-
-    setStarterData({
-      ...starterData,
-      columns: {
-        [start.id]: newStarterCol,
-        [end.id]: newEndCol,
-      },
-    });
+      return newData;
+    })
   };
 
   return (
