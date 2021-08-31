@@ -1,27 +1,25 @@
 import React, { useState } from "react";
-import Todo from "../todo/Todo";
+import initialData from "../../data/data";
 
+import List from "../list/List";
 import { DragDropContext } from "react-beautiful-dnd";
 
-import initialData from "../../data/data";
+import "./dashboard.scss";
 
 const Dashboard = () => {
   const [starterData, setStarterData] = useState(initialData);
 
   const addTask = (task, colId) => {
-    const newTasks = { ...starterData.tasks, [task.id]: task };
-    const newTaskIds = [...starterData.columns[colId].taskIds, task.id];
-
-    setStarterData({
-      ...starterData,
-      tasks: newTasks,
-      columns: {
-        ...starterData.columns,
-        [colId]: {
-          ...starterData.columns[colId],
-          taskIds: newTaskIds,
-        },
-      },
+    setStarterData((prevData) => {
+      const newTasks = { ...starterData.tasks, [task.id]: task };
+      const newTaskIds = [...starterData.columns[colId].taskIds, task.id];
+      const newData = { ...prevData };
+      newData.tasks = newTasks;
+      newData.columns[colId] = {
+        ...newData.columns[colId],
+        taskIds: newTaskIds,
+      };
+      return newData;
     });
   };
 
@@ -29,55 +27,48 @@ const Dashboard = () => {
     Object.entries(newTask).forEach((update) => {
       const key = update[0];
       const value = update[1];
-      const newTasks = { ...starterData };
-      newTasks.tasks[taskId] = {
-        ...newTasks.tasks[taskId],
-        [key]: value,
-      };
-      setStarterData(newTasks);
+      setStarterData((prevData) => {
+        const newData = { ...prevData };
+        newData.tasks[taskId] = {
+          ...newData.tasks[taskId],
+          [key]: value,
+        };
+        return newData;
+      });
     });
   };
 
   const deleteTask = (taskId, colId) => {
-    const newTasks = { ...starterData.tasks };
-    delete newTasks[taskId];
-    const newTaskIds = [...starterData.columns[colId].taskIds];
-    const filteredTasks = newTaskIds.filter((id) => id !== taskId);
-    const newStarterData = {
-      ...starterData,
-      tasks: newTasks,
-      columns: {
-        ...starterData.columns,
-        [colId]: {
-          ...starterData.columns[colId],
-          taskIds: filteredTasks,
-        },
-      },
-    };
-    setStarterData(newStarterData);
+    setStarterData((prevData) => {
+      const newData = { ...prevData };
+
+      const newTasksIds = newData.columns[colId].taskIds.filter((id) => id !== taskId);
+      
+      newData.columns[colId].taskIds = newTasksIds;
+      delete newData.tasks[taskId];
+
+      return newData;
+    });
   };
 
-  const searchTask = (val) => {    
-    const tasks = { ...starterData.tasks };
-    const colTaskIds = [ ...starterData.columns['column-1'].taskIds ];
-    const filteredTask = Object.entries(tasks)
-      .filter(([key, value]) => {
-        
-        return !value.isDone && value.title
-          .toLowerCase()
-          .includes(val.toLocaleLowerCase());
-      })
-      .map(task => task[0]);
-   
-    setStarterData({
-      ...starterData,
-      columns: {
-        ...starterData.columns,
-        ['column-1']: {
-          ...starterData.columns['column-1'],
-          taskIds: filteredTask
-        }
-      }
+  const searchTask = (val) => {
+    setStarterData((prevData) => {
+      const newData = { ...prevData };
+      const filteredTaskId = Object.entries(newData.tasks)
+        .filter(([key, value]) => {
+          return (
+            !value.isDone &&
+            value.title.toLowerCase().includes(val.toLocaleLowerCase())
+          );
+        })
+        .map((task) => task[0]);
+
+      newData.columns["column-1"] = {
+        ...starterData.columns["column-1"],
+        taskIds: filteredTaskId,
+      };
+
+      return newData;
     });
   };
 
@@ -93,73 +84,58 @@ const Dashboard = () => {
     const start = starterData.columns[source.droppableId];
     const end = starterData.columns[destination.droppableId];
 
-    
-
     if (start === end) {
       const taskIds = [...start.taskIds];
       const removed = taskIds.splice(source.index, 1);
       taskIds.splice(destination.index, 0, removed[0]);
 
-      const newColOrder = {
-        ...start,
-        taskIds,
-      };
-
-      setStarterData({
-        ...starterData,
-        columns: {
-          ...starterData.columns,
-          [start.id]: newColOrder,
-        },
+      setStarterData((prevData) => {
+        const newData = { ...prevData };
+        newData.columns[start.id].taskIds = taskIds;
+        return newData;
       });
-      return; // return after action
+
+      return; // Exit the function
     }
 
     const startColTaskIds = [...start.taskIds];
     const endColTaskIds = [...end.taskIds];
     const removed = startColTaskIds.splice(source.index, 1);
 
-    starterData.tasks[draggableId].isDone = !starterData.tasks[draggableId].isDone;
-    
+    // Toggle task status
+    starterData.tasks[draggableId].isDone =
+      !starterData.tasks[draggableId].isDone;
+
+    // Insert removed item from start col to end col
     endColTaskIds.splice(destination.index, 0, removed[0]);
-    
-    const newStarterCol = {
-      ...start,
-      taskIds: startColTaskIds,
-    };
 
-    const newEndCol = {
-      ...end,
-      taskIds: endColTaskIds,
-    };
+    setStarterData((prevData) => {
+      const newData = {...prevData};
+      newData.columns[start.id].taskIds = startColTaskIds;
+      newData.columns[end.id].taskIds = endColTaskIds;
 
-    setStarterData({
-      ...starterData,
-      columns: {
-        [start.id]: newStarterCol,
-        [end.id]: newEndCol,
-      },
-    });
+      return newData;
+    })
   };
 
   return (
     <div className="container">
-      <h3 className="text-center">Tasks Dashboard</h3>
+      <div className="dashboard-header shadow-lg">
+      </div>      
       <div className="row gy-3 justify-content-around mt-5">
         <DragDropContext onDragEnd={handleDragEnd}>
           {
             // Render all task from column in order
             starterData.columnOrder.map((colId) => {
               const column = starterData.columns[colId];
-
               const colTasks = column.taskIds.map(
                 (taskId) => starterData.tasks[taskId]
               );
               return (
-                <Todo
+                <List
                   key={column.id}
                   id={column.id}
-                  title={column.title}
+                  name={column.title}
                   onEditTask={editTask}
                   onAddTask={addTask}
                   onDeleteTask={deleteTask}
