@@ -26,7 +26,7 @@ const EditTask = ({editTask}) => {
 
   return (
     <div
-      className="modal fade"
+      className="modal fade text-dark"
       id="editTaskModal"
       data-bs-backdrop="static"
       data-bs-keyboard="false"

@@ -26,7 +26,7 @@ const Modal = ({ addTask, colId }) => {
 
   return (
     <div
-      className="modal fade"
+      className="modal fade text-dark"
       id="staticBackdrop"
       data-bs-backdrop="static"
       data-bs-keyboard="false"
@@ -51,27 +51,25 @@ const Modal = ({ addTask, colId }) => {
                 <input
                   type="text"
                   className="form-control"
-                  id="from-title"
+                  id="floatingInput"
                   name="title"
                   value={task.title}
                   onChange={handleChange}
                 />
-                <label htmlFor="form-title" className="form-label">
+                <label htmlFor="floatingInput" className="form-label">
                   Title
                 </label>
               </div>
               <div className="form-floating">
                 <textarea
                   className="form-control"
-                  id="form-description"
+                  id="floatingTextarea"
                   style={{ height: "200px" }}
                   name="description"
                   value={task.description}
                   onChange={handleChange}
                 ></textarea>
-                <label htmlFor="form-description" className="form-label">
-                  Description...
-                </label>
+                <label htmlFor="floatingTextarea">Description...</label>
               </div>
               <div className="modal-footer">
                 <button

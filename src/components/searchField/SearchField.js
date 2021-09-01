@@ -7,7 +7,7 @@ const SearchField = ({onSearchTask}) => {
         type="text"
         placeholder="Search your task..."
         onChange={(event) => onSearchTask(event.target.value)}
-        className="form-control py-2"
+        className="form-control py-3"
       />
     </>
   );
